@@ -10,7 +10,7 @@ from subprocess import run, CalledProcessError
 pdf_directory = 'Mezmure/PDF'
 ppt_directory = 'Mezmure/PPT'
 doc_directory = 'Mezmure/WORD'
-output_directory = 'Mezmure/CSV_Output'
+output_directory = 'Mezmure/CSV_Output0'
 error_log_file = os.path.join(output_directory, 'error_log.txt')
 
 # Ensure output directory exists
@@ -23,10 +23,10 @@ def log_error(message):
         error_log.write(message + '\n')
 
 # Function to add standard columns to each row
-def add_standard_columns(file_name, page_number, text, zemari_name="Unknown Zemari"):
+def add_standard_columns(file_name, page_number, text, genre="Unknown Genre", zemari_name="Unknown Zemari"):
     mezmur_name = os.path.splitext(os.path.basename(file_name))[0]  # Extract file name without extension
     file_name_only = os.path.basename(file_name)  # Only file name without path
-    return [mezmur_name, page_number, zemari_name, file_name_only, text]
+    return [mezmur_name, page_number, zemari_name, file_name_only, genre, text]
 
 # PDF to CSV conversion
 def process_pdf_file(pdf_file_path, output_directory):
@@ -43,7 +43,7 @@ def process_pdf_file(pdf_file_path, output_directory):
         # Write the data with headers
         with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['Mezmur Name', 'Page/Verse', 'Zemari Name', 'File Name', 'Verses'])  # Add headers
+            writer.writerow(['Mezmur Name', 'Page/Verse', 'Zemari Name', 'File Name', 'Genre', 'Verses'])  # Add headers
             writer.writerows(data)
         print(f"Converted {pdf_file_path} to {csv_file_name}")
     except Exception as e:
@@ -63,7 +63,7 @@ def process_ppt_file(ppt_file_path, output_directory):
 
         with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['Mezmur Name', 'Page/Verse', 'Zemari Name', 'File Name', 'Verses'])
+            writer.writerow(['Mezmur Name', 'Page/Verse', 'Zemari Name', 'File Name', 'Genre', 'Verses'])
             writer.writerows(data)
         print(f"Converted {ppt_file_path} to {csv_file_name}")
     except Exception as e:
@@ -82,7 +82,7 @@ def process_docx_file(docx_file_path, output_directory):
 
         with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['Mezmur Name', 'Page/Verse', 'Zemari Name', 'File Name', 'Verses'])
+            writer.writerow(['Mezmur Name', 'Page/Verse', 'Zemari Name', 'File Name', 'Genre', 'Verses'])
             writer.writerows(data)
         print(f"Converted {docx_file_path} to {csv_file_name}")
     except Exception as e:

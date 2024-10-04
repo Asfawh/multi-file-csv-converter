@@ -80,6 +80,7 @@ Each page of a file is now formated as a single row in the CSV file.
 - **Page/Verse**: (page number),
 - **Zemari Name**: (default to "Unknown Zemari" unless specified),
 - **File Name**: (full path to the file),
+- **Genre column**: (default to "Unknown Genre" unless specified),
 - **Verses**: (extracted text).
 
 ## Requirements
