@@ -1,8 +1,0 @@
-Error processing anedbtymy iawexa(186).pptx: "no relationship of type 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument' in collection"
-Error processing Ende Kidus Dawit Andebetien Fita.pptx: Package not found at 'Mezmure/PPT/Ende Kidus Dawit Andebetien Fita.pptx'
-Error processing Degu Meleak Gabriel.pptx: Package not found at 'Mezmure/PPT/Degu Meleak Gabriel.pptx'
-Error processing DES YIBELEN.pptx: Package not found at 'Mezmure/PPT/DES YIBELEN.pptx'
-Error processing alew neger.pptx: Package not found at 'Mezmure/PPT/alew neger.pptx'
-Error processing Merkebie edited.pptx: Package not found at 'Mezmure/PPT/Merkebie edited.pptx'
-Error processing Des Alegn BeAmlakie Sira.pptx: Package not found at 'Mezmure/PPT/Des Alegn BeAmlakie Sira.pptx'
-Error processing Dil Lenesaw.pptx: Package not found at 'Mezmure/PPT/Dil Lenesaw.pptx'

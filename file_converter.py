@@ -1,112 +1,129 @@
-import pytesseract
-from pdf2image import convert_from_path
-from docx import Document
 import os
 import csv
-import mimetypes
+import pytesseract
+from pdf2image import convert_from_path
 from pptx import Presentation
+from docx import Document
+from subprocess import run, CalledProcessError
 
-# Directories
+# Directory paths
 pdf_directory = 'Mezmure/PDF'
-docx_directory = 'Mezmure/WORD'
 ppt_directory = 'Mezmure/PPT'
-output_directory = 'Mezmure/CSV_Output1'
+doc_directory = 'Mezmure/WORD'
+output_directory = 'Mezmure/CSV_Output'
 error_log_file = os.path.join(output_directory, 'error_log.txt')
 
-# Ensure that the output directory exists
+# Ensure output directory exists
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
 
-# Function to log errors
-def log_error(file_name, error_message):
+# Error logging setup
+def log_error(message):
     with open(error_log_file, 'a') as error_log:
-        error_log.write(f"Error processing {file_name}: {error_message}\n")
+        error_log.write(message + '\n')
 
-# Function to process PDFs
-def process_pdf_file(pdf_file_path):
+# Function to add standard columns to each row
+def add_standard_columns(file_name, page_number, text, zemari_name="Unknown Zemari"):
+    mezmur_name = os.path.splitext(os.path.basename(file_name))[0]  # Extract file name without extension
+    file_name_only = os.path.basename(file_name)  # Only file name without path
+    return [mezmur_name, page_number, zemari_name, file_name_only, text]
+
+# PDF to CSV conversion
+def process_pdf_file(pdf_file_path, output_directory):
     try:
         pages = convert_from_path(pdf_file_path)
         data = []
-        for page in pages:
+        for page_number, page in enumerate(pages, start=1):
             text = pytesseract.image_to_string(page, lang='amh')
-            lines = text.split('\n')
-            for line in lines:
-                data.append([line])
+            data.append(add_standard_columns(pdf_file_path, page_number, text))
 
-        return data
+        csv_file_name = os.path.splitext(os.path.basename(pdf_file_path))[0] + '.csv'
+        csv_file_path = os.path.join(output_directory, csv_file_name)
+
+        # Write the data with headers
+        with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['Mezmur Name', 'Page/Verse', 'Zemari Name', 'File Name', 'Verses'])  # Add headers
+            writer.writerows(data)
+        print(f"Converted {pdf_file_path} to {csv_file_name}")
     except Exception as e:
-        raise RuntimeError(f"Error processing PDF: {str(e)}")
+        log_error(f"Error processing PDF file {pdf_file_path}: {str(e)}")
 
-# Function to process DOCX files
-def process_docx_file(docx_file_path):
-    try:
-        doc = Document(docx_file_path)
-        data = []
-        for paragraph in doc.paragraphs:
-            data.append([paragraph.text])
-        return data
-    except Exception as e:
-        raise RuntimeError(f"Error processing DOCX: {str(e)}")
-
-# Function to process PPT files
-def process_ppt_file(ppt_file_path):
+# PPT to CSV conversion
+def process_ppt_file(ppt_file_path, output_directory):
     try:
         prs = Presentation(ppt_file_path)
         data = []
-        for slide in prs.slides:
-            for shape in slide.shapes:
-                if hasattr(shape, "text"):
-                    data.append([shape.text])
-        return data
-    except Exception as e:
-        raise RuntimeError(f"Error processing PPT: {str(e)}")
+        for page_number, slide in enumerate(prs.slides, start=1):
+            slide_text = '\n'.join([shape.text for shape in slide.shapes if hasattr(shape, 'text')])
+            data.append(add_standard_columns(ppt_file_path, page_number, slide_text))
 
-# Function to write to CSV
-def write_to_csv(data, csv_file_path):
-    try:
+        csv_file_name = os.path.splitext(os.path.basename(ppt_file_path))[0] + '.csv'
+        csv_file_path = os.path.join(output_directory, csv_file_name)
+
         with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
+            writer.writerow(['Mezmur Name', 'Page/Verse', 'Zemari Name', 'File Name', 'Verses'])
             writer.writerows(data)
+        print(f"Converted {ppt_file_path} to {csv_file_name}")
     except Exception as e:
-        raise RuntimeError(f"Error writing CSV: {str(e)}")
+        log_error(f"Error processing PPT file {ppt_file_path}: {str(e)}")
 
-# Function to process all files in a directory
-def process_directory(directory, file_type, process_function):
-    for file_name in os.listdir(directory):
-        file_path = os.path.join(directory, file_name)
-        if file_name.endswith(file_type):
-            try:
-                # Process the file
-                extracted_data = process_function(file_path)
-                # Create CSV file name
-                csv_file_name = os.path.splitext(file_name)[0] + '.csv'
-                csv_file_path = os.path.join(output_directory, csv_file_name)
-                # Write extracted data to CSV
-                write_to_csv(extracted_data, csv_file_path)
-                print(f"Successfully processed and converted {file_name} to {csv_file_name}")
-            except Exception as e:
-                log_error(file_name, str(e))
-                print(f"Error logged for {file_name}")
+# DOCX to CSV conversion
+def process_docx_file(docx_file_path, output_directory):
+    try:
+        doc = Document(docx_file_path)
+        data = []
+        for page_number, paragraph in enumerate(doc.paragraphs, start=1):
+            data.append(add_standard_columns(docx_file_path, page_number, paragraph.text))
 
-# Main function to run all the processing
-def main():
-    # Clear previous error log
-    if os.path.exists(error_log_file):
-        os.remove(error_log_file)
+        csv_file_name = os.path.splitext(os.path.basename(docx_file_path))[0] + '.csv'
+        csv_file_path = os.path.join(output_directory, csv_file_name)
 
-    # Process PDF files
-    print("Processing PDF files...")
-    process_directory(pdf_directory, '.pdf', process_pdf_file)
+        with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(['Mezmur Name', 'Page/Verse', 'Zemari Name', 'File Name', 'Verses'])
+            writer.writerows(data)
+        print(f"Converted {docx_file_path} to {csv_file_name}")
+    except Exception as e:
+        log_error(f"Error processing DOCX file {docx_file_path}: {str(e)}")
 
-    # Process DOCX files
-    print("Processing DOCX files...")
-    process_directory(docx_directory, '.docx', process_docx_file)
+# Convert .doc to .docx
+def convert_doc_to_docx(doc_file_path):
+    try:
+        docx_file_path = os.path.splitext(doc_file_path)[0] + '.docx'
+        run(['soffice', '--headless', '--convert-to', 'docx', doc_file_path, '--outdir', os.path.dirname(doc_file_path)], check=True)
+        print(f"Converted {doc_file_path} to {docx_file_path}")
+        return docx_file_path
+    except CalledProcessError as e:
+        log_error(f"Error converting DOC to DOCX {doc_file_path}: {str(e)}")
+        return None
+
+# Main processing function to handle all file types
+def process_files():
+    # Process PDFs
+    for pdf_file in os.listdir(pdf_directory):
+        if pdf_file.endswith('.pdf'):
+            pdf_file_path = os.path.join(pdf_directory, pdf_file)
+            process_pdf_file(pdf_file_path, output_directory)
 
     # Process PPT files
-    print("Processing PPT files...")
-    process_directory(ppt_directory, '.pptx', process_ppt_file)
+    for ppt_file in os.listdir(ppt_directory):
+        if ppt_file.endswith('.pptx'):
+            ppt_file_path = os.path.join(ppt_directory, ppt_file)
+            process_ppt_file(ppt_file_path, output_directory)
 
-    print("All files have been processed.")
+    # Process DOC and DOCX files
+    for doc_file in os.listdir(doc_directory):
+        doc_file_path = os.path.join(doc_directory, doc_file)
+        if doc_file.endswith('.docx'):
+            process_docx_file(doc_file_path, output_directory)
+        elif doc_file.endswith('.doc'):
+            docx_file_path = convert_doc_to_docx(doc_file_path)
+            if docx_file_path:
+                process_docx_file(docx_file_path, output_directory)
 
-if __name__ == "__main__":
-    main()
+# Run the process
+process_files()
+
+print("All files have been processed.")

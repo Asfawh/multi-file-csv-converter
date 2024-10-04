@@ -1,3 +1,0 @@
-Error processing Yemisirach des yibelen.docx: file 'Mezmure/WORD/Yemisirach des yibelen.docx' is not a Word file, content type is 'application/vnd.openxmlformats-officedocument.themeManager+xml'
-Error processing Yohanesni Yatemk.docx: file 'Mezmure/WORD/Yohanesni Yatemk.docx' is not a Word file, content type is 'application/vnd.openxmlformats-officedocument.themeManager+xml'
-Error processing Gena Inzemiralen.docx: file 'Mezmure/WORD/Gena Inzemiralen.docx' is not a Word file, content type is 'application/vnd.openxmlformats-officedocument.themeManager+xml'

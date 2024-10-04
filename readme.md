@@ -8,7 +8,7 @@
 
 ## Modularization
 
-The script is modularized, allowing for easy extension. You can:
+The script is modularized, allowing for easy extension.
 
 - Add more file types by creating new processing functions.
 - The process_directory function generalizes the directory traversal and file handling.
@@ -71,7 +71,16 @@ The script is modularized, allowing for easy extension. You can:
 - **PPT Files**: Located in `Mezmure/PPT`.
 - **CSV Output**: Files will be saved in `Mezmure/CSV_Output`.
 
-You can modify these paths in the script according to your own directory structure.
+### CSV_Output
+
+Each page of a file is now formated as a single row in the CSV file.
+
+- Columns are:
+- **Mezmur Name**: (from the file name),
+- **Page/Verse**: (page number),
+- **Zemari Name**: (default to "Unknown Zemari" unless specified),
+- **File Name**: (full path to the file),
+- **Verses**: (extracted text).
 
 ## Requirements
 
