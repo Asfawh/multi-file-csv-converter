@@ -119,9 +119,84 @@ python file_converter.py
 
 ### How to Use:
 1. Update the script's file directories if needed.
-2. Follow the steps for installing dependencies and Tesseract OCR.
-3. Run the Python script as described.
+  `~/Documents/repo/Py/multi-file-csv-converter main !9 ?1 ❯ pipenv shell` #Py-kyBhG0Ms
 
-Let me know if you'd like any further changes!
+2. Follow the steps for installing dependencies and Tesseract OCR.
+  `❯ pip list
+  Package            Version
+  ------------------ -----------
+  aiohttp            3.9.5
+  aiohttp-retry      2.8.3
+  aiosignal          1.3.1
+  appnope            0.1.4
+  asttokens          2.4.1
+  async-timeout      4.0.3
+  attrs              23.2.0
+  certifi            2024.2.2
+  cffi               1.17.1
+  charset-normalizer 3.3.2
+  comm               0.2.2
+  cryptography       43.0.1
+  debugpy            1.8.1
+  decorator          5.1.1
+  distro             1.9.0
+  exceptiongroup     1.2.1
+  executing          2.0.1
+  frozenlist         1.4.1
+  idna               3.7
+  ipykernel          6.29.4
+  ipython            8.24.0
+  jedi               0.19.1
+  jupyter_client     8.6.1
+  jupyter_core       5.7.2
+  lxml               5.3.0
+  matplotlib-inline  0.1.7
+  multidict          6.0.5
+  nest-asyncio       1.6.0
+  numpy              2.1.1
+  packaging          24.0
+  pandas             2.2.2
+  parso              0.8.4
+  pdf2image          1.17.0
+  pdfminer.six       20231228
+  pdfplumber         0.11.4
+  pexpect            4.9.0
+  pillow             10.4.0
+  pip                24.0
+  platformdirs       4.2.2
+  prompt-toolkit     3.0.43
+  psutil             5.9.8
+  ptyprocess         0.7.0
+  pure-eval          0.2.2
+  pycparser          2.22
+  Pygments           2.18.0
+  PyJWT              2.8.0
+  pypandoc           1.13
+  PyPDF2             3.0.1
+  pypdfium2          4.30.0
+  pytesseract        0.3.13
+  python-dateutil    2.9.0.post0
+  python-docx        1.1.2
+  python-pptx        1.0.2
+  pytz               2024.2
+  pyzmq              26.0.3
+  requests           2.31.0
+  setuptools         69.2.0
+  six                1.16.0
+  stack-data         0.6.3
+  tabula-py          2.9.3
+  tornado            6.4
+  traitlets          5.14.3
+  twilio             9.0.5
+  typing_extensions  4.11.0
+  tzdata             2024.1
+  urllib3            2.2.1
+  wcwidth            0.2.13
+  wheel              0.43.0
+  XlsxWriter         3.2.0
+  yarl               1.9.4`
+
+3. Run the Python script as described.
+  `~/Documents/repo/Py/multi-file-csv-converter main !9 ?2 ❯ python file_converter.py`
 
 ```
