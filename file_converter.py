@@ -74,19 +74,40 @@ def process_docx_file(docx_file_path, output_directory):
     try:
         doc = Document(docx_file_path)
         data = []
-        for page_number, paragraph in enumerate(doc.paragraphs, start=1):
-            data.append(add_standard_columns(docx_file_path, page_number, paragraph.text))
+        page_number = 1
+        paragraph_group = []  # Will hold text until a page-like boundary is encountered (e.g., blank line)
 
+        # Loop through each paragraph
+        for paragraph in doc.paragraphs:
+            if paragraph.text.strip():  # If paragraph contains text, add to group
+                paragraph_group.append(paragraph.text)
+            else:  # When encountering a blank line, treat it as a new page or section
+                if paragraph_group:
+                    # Join the paragraphs in the group, treat as one row for this "page"
+                    combined_text = '\n'.join(paragraph_group)
+                    data.append(add_standard_columns(docx_file_path, page_number, combined_text))
+                    paragraph_group = []  # Reset group for the next page
+                    page_number += 1
+        
+        # Catch any remaining text if the last page doesn't end in a blank line
+        if paragraph_group:
+            combined_text = '\n'.join(paragraph_group)
+            data.append(add_standard_columns(docx_file_path, page_number, combined_text))
+
+        # Write CSV file
         csv_file_name = os.path.splitext(os.path.basename(docx_file_path))[0] + '.csv'
         csv_file_path = os.path.join(output_directory, csv_file_name)
 
         with open(csv_file_path, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow(['Mezmur Name', 'Page/Verse', 'Zemari Name', 'File Name', 'Genre', 'Verses'])
+            writer.writerow(['Mezmur Name', 'Page/Verse', 'Zemari Name', 'File Name', 'Genre', 'Verses'])  # Add headers
             writer.writerows(data)
+        
         print(f"Converted {docx_file_path} to {csv_file_name}")
+
     except Exception as e:
         log_error(f"Error processing DOCX file {docx_file_path}: {str(e)}")
+
 
 # Convert .doc to .docx
 def convert_doc_to_docx(doc_file_path):
